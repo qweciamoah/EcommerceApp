@@ -36,9 +36,9 @@ pipeline {
            steps {
                 script {
                     dir ("EcommerceApp") {
-                        def classesDir= sh('script mvn help:evaluate -Dexpression=project.build.outputDirectory -q -DforceStdout' , returnStdout: true).trim()
-                        withSonarQubeEnv('sonarqube') 
-                        sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=EcommerceApp-Pipeline"
+                        withSonarQubeEnv('sonarqube') {
+                            sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=EcommerceApp-Pipeline -Dsonar.java.binaries=."
+                        }
                     }
                 }
             }
