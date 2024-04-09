@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    tools {
+        maven '3.9.6'
+    }
+    stages {
+        stage( "git clone") {
+            steps {
+              git 'https://github.com/qweciamoah/EcommerceApp.git'
+            }
+        }
+        stage ( "Build test Package with maven tool") {
+            steps{
+                dir ("EcommerceApp") {
+                sh '''
+                mvn clean
+                 '''
+                } 
+            }
+        }
+        stage ("testing with maven"){
+            steps{
+                dir( "EcommerceApp") {
+                sh '''
+                mvn test
+                mvn package
+                 '''
+                }
+            }
+        }
+        stage ("SonarQube Analysis"){
+            environment{
+                ScannerHome= tool "sonarqube5.0.1"
+            }
+           steps {
+                script {
+                    dir ("EcommerceApp") {
+                        def classesDir= sh('script mvn help:evaluate -Dexpression=project.build.outputDirectory -q -DforceStdout' , returnStdout: true).trim()
+                        withSonarQubeEnv('sonarqube') 
+                        sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=EcommerceApp-Pipeline"
+                    }
+                }
+            }
+        }
+    }   
+}
