@@ -37,7 +37,7 @@ pipeline {
                 script {
                     dir ("EcommerceApp") {
                         withSonarQubeEnv('sonarqube') {
-                            sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=EcommerceApp-Pipeline -Dsonar.java.binaries=."
+                            sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=EcommerceApp-Pipeline -Dsonar.java.binaries=. sonar.java.binaries= **/*.java"
                         }
                     }
                 }
